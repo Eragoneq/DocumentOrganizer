@@ -1,0 +1,7 @@
+/target/
+/runtimes/
+/dist/
+/data/
+*.sqlite3*
+*.dll
+*.pdb
