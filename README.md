@@ -1,6 +1,11 @@
 # Document Organizer
 
-Windows-first Rust desktop application for reviewing and organizing local documents with user-managed AI endpoints. GPUI Kit supplies native controls and resizable panes. SQLite stores the catalog, extracted content and revisions, tags, jobs, approvals, and move journal.
+Rust desktop application for reviewing and organizing local documents with user-managed AI endpoints for privacy responsible users.
+
+## Technologies
+
+- GPUI - for native UI  
+- SQLite - for storing the catalog, extracted content and revisions, tags, jobs, approvals, and move journal
 
 ## Build and run
 
@@ -46,26 +51,16 @@ Actual OS Pictures, Documents, Music, and Videos folders are resolved with `User
 
 Shortcuts: Ctrl+Down / Ctrl+Up for next / previous; Ctrl+Enter for approve and next; Ctrl+Alt+Z for the latest eligible undo. Background work stays off the UI thread. Endpoint failures pause analysis; **Retry** resumes failed/cancelled jobs. Interrupted running jobs return to the queue after restart.
 
-## Filesystem operations
+<!--## Filesystem operations
 
 Same-volume moves use Windows `MoveFileExW` without replacement after source verification. Windows requires descendant file handles to close before a directory rename. Cross-volume moves copy to a unique temporary destination, flush and verify it, publish it, then remove verified source entries; files remain locked against concurrent writers throughout that workflow. Modification times, read-only attributes, and Windows alternate data streams are preserved by the copy path. Whole project folders move, and descendant current paths update together. Cross-volume projects containing symbolic links, junctions, or hard links are blocked. ACL inheritance is not replicated.
 
-SQLite records move stages and temporary paths. Startup reconciles interrupted operations. If both copies remain, explicit **Retry recovery** is required. Unverifiable destinations never authorize source removal. Failed temporary copies remain for inspection; retry uses a fresh temporary name. Completed moves can be undone if content is unchanged and the original location is free. Original paths stay immutable. No directory merging, automatic deduplication, or deletion of excluded files is performed.
+SQLite records move stages and temporary paths. Startup reconciles interrupted operations. If both copies remain, explicit **Retry recovery** is required. Unverifiable destinations never authorize source removal. Failed temporary copies remain for inspection; retry uses a fresh temporary name. Completed moves can be undone if content is unchanged and the original location is free. Original paths stay immutable. No directory merging, automatic deduplication, or deletion of excluded files is performed.-->
 
 ## Content limits
 
 Digital PDFs and recognized UTF-8 text/code files are extracted, including common extensionless source files. Extraction is bounded to 1 MiB, and PDFs to 100 pages. Long model inputs use head/middle/tail excerpts; limitations appear in details. Images are resized to at most 1024 pixels for classification, leaving originals intact. Locked files are cataloged for review and retried on a manual rescan. Scanned PDFs, extraction failures, and unsupported formats remain reviewable. Office and other unsupported content use metadata plus **Open original**. OCR, Office conversion, watching, embeddings, cloud integrations, and dashboards are deferred.
 
-## Tests
+# Work in Progress
 
-```powershell
-cargo test --locked --no-default-features
-cargo test --locked --no-default-features --test pdf -- --ignored
-cargo test --locked --features ui-tests --bin document-organizer
-```
-
-PDF tests require the pinned runtime, or `PDFIUM_LIBRARY` pointing to its DLL. Tests use disposable files and mock HTTP endpoints. They cover overlapping sources, projects and overrides, stale revisions, manual tags, content search/history, outages, cancellation, restart recovery, collisions, changed sources, move journaling and undo, alternate streams, and the copy path used for cross-volume moves. A headless GPUI test renders and navigates a 10,000-item catalog. Tests do not evaluate live-model accuracy or physically move files between separate drives.
-
-`scanner.rs` catalogs; `content.rs` extracts/renders; `model.rs` validates endpoints; `db.rs` owns migrations/revisions; `worker.rs` runs background work; `moves.rs` journals filesystem operations; `ui.rs` presents review and approval. Item/tag revisions guard against outdated results.
-
-Dependencies: [GPUI Kit](https://github.com/longbridge/gpui-kit), [pdfium-render](https://github.com/ajrcarey/pdfium-render), [PDFium binaries](https://github.com/bblanchon/pdfium-binaries), [standard directory APIs](https://docs.rs/directories/latest/directories/struct.UserDirs.html).
+This is still a project mainly intended for personal use, as such it may contain bugs and not work on certain evnironments.
